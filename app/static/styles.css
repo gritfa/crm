@@ -1,0 +1,42 @@
+:root {
+  --brand: #3157d5;
+  --brand-soft: #eef2ff;
+  --surface: #f5f7fb;
+}
+
+body { background: var(--surface); color: #1c2434; min-height: 100vh; }
+a { color: var(--brand); text-decoration: none; }
+.navbar-brand { letter-spacing: .2px; }
+.content-shell { max-width: 1600px; }
+.page-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.page-heading h1 { font-size: 1.75rem; margin: 0 0 .25rem; }
+.page-heading p { color: #6c757d; margin: 0; }
+.metric-card { background: #fff; border-radius: 1rem; box-shadow: 0 .25rem 1rem rgba(31, 45, 61, .06); padding: 1.35rem; display: flex; flex-direction: column; min-height: 130px; justify-content: space-between; }
+.metric-card span { color: #6c757d; }
+.metric-card strong { font-size: 2rem; letter-spacing: -.5px; }
+.metric-card.accent { color: #fff; background: linear-gradient(135deg, #3157d5, #6d45d9); }
+.metric-card.accent span { color: rgba(255,255,255,.8); }
+.card { border-radius: .9rem; overflow: hidden; }
+.card-header { border-color: #edf0f4; }
+.table > :not(caption) > * > * { padding: .9rem 1rem; vertical-align: middle; }
+.table thead th { background: #fafbfc; color: #697386; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; white-space: nowrap; }
+.clickable-row { cursor: pointer; }
+.empty-cell { color: #8a94a6; padding: 2.5rem !important; text-align: center; }
+.form-card { max-width: 960px; }
+.detail-grid { display: grid; grid-template-columns: 100px 1fr; row-gap: .9rem; margin: 0; }
+.detail-grid dt { color: #7a8495; font-weight: 500; }
+.detail-grid dd { margin: 0; white-space: pre-line; }
+.login-shell { display: grid; place-items: center; min-height: calc(100vh - 3rem); }
+.login-card { width: min(430px, 100%); }
+.brand-mark { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; color: #fff; background: linear-gradient(135deg, #3157d5, #6d45d9); font-size: 1.4rem; font-weight: 700; }
+.status-new, .status-draft { background: #e9ecef; color: #495057; }
+.status-following, .status-active { background: #dce6ff; color: #244fbd; }
+.status-won, .status-completed { background: #dff4e7; color: #18723a; }
+.status-lost, .status-cancelled { background: #f4e2e2; color: #a43737; }
+
+@media (max-width: 768px) {
+  .page-heading { align-items: flex-start; flex-direction: column; }
+  .metric-card { min-height: 110px; }
+  .metric-card strong { font-size: 1.5rem; }
+}
+

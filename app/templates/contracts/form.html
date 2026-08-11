@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ '编辑合同' if contract else '新增合同' }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>{{ '编辑合同' if contract else '新增合同' }}</h1><p>保留合同执行和回款所需的核心信息</p></div></div>
+<div class="card border-0 shadow-sm form-card"><div class="card-body p-4">
+  <form method="post" action="{{ '/contracts/' ~ contract.id if contract else '/contracts' }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="row g-3">
+      <div class="col-md-6"><label class="form-label">合同编号 *</label><input class="form-control" name="number" value="{{ contract.number if contract else '' }}" required></div>
+      <div class="col-md-6"><label class="form-label">客户 *</label><select class="form-select" name="customer_id" required><option value="">请选择</option>{% for customer in customers %}<option value="{{ customer.id }}" {% if selected_customer_id == customer.id %}selected{% endif %}>{{ customer.name }}</option>{% endfor %}</select></div>
+      <div class="col-md-8"><label class="form-label">合同名称 *</label><input class="form-control" name="title" value="{{ contract.title if contract else '' }}" required></div>
+      <div class="col-md-4"><label class="form-label">合同金额</label><input class="form-control" type="number" min="0" step="0.01" name="amount" value="{{ contract.amount if contract else '0.00' }}"></div>
+      <div class="col-md-4"><label class="form-label">状态</label><select class="form-select" name="status"><option value="draft" {% if not contract or contract.status=='draft' %}selected{% endif %}>草稿</option><option value="active" {% if contract and contract.status=='active' %}selected{% endif %}>执行中</option>{% if contract %}<option value="completed" {% if contract.status=='completed' %}selected{% endif %}>已完成</option><option value="cancelled" {% if contract.status=='cancelled' %}selected{% endif %}>已取消</option>{% endif %}</select></div>
+      <div class="col-md-4"><label class="form-label">开始日期</label><input class="form-control" type="date" name="start_date" value="{{ contract.start_date if contract and contract.start_date else '' }}"></div>
+      <div class="col-md-4"><label class="form-label">结束日期</label><input class="form-control" type="date" name="end_date" value="{{ contract.end_date if contract and contract.end_date else '' }}"></div>
+      <div class="col-12"><label class="form-label">备注</label><textarea class="form-control" name="notes" rows="4">{{ contract.notes or '' if contract else '' }}</textarea></div>
+    </div>
+    <div class="d-flex gap-2 mt-4"><button class="btn btn-primary">保存</button><a class="btn btn-light" href="/contracts">取消</a></div>
+  </form>
+</div></div>
+{% endblock %}
+

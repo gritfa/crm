@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}首页 · CRM 系统{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div><h1 class="h3 mb-1">工作台</h1><div class="text-secondary">今天是 {{ today }}</div></div>
+  <div class="d-flex gap-2">
+    <a href="/leads/new" class="btn btn-outline-primary">新增线索</a>
+    <a href="/customers/new" class="btn btn-primary">新增客户</a>
+  </div>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-xl-3"><div class="metric-card"><span>有效客户</span><strong>{{ stats.customers }}</strong></div></div>
+  <div class="col-6 col-xl-3"><div class="metric-card"><span>待跟进线索</span><strong>{{ stats.open_leads }}</strong></div></div>
+  <div class="col-6 col-xl-3"><div class="metric-card"><span>执行中合同</span><strong>{{ stats.active_contracts }}</strong></div></div>
+  <div class="col-6 col-xl-3"><div class="metric-card accent"><span>本月收款</span><strong>{{ stats.month_payments|money }}</strong></div></div>
+</div>
+<div class="row g-4">
+  <div class="col-xl-7">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <strong>最近收款</strong><a href="/payments" class="small">查看全部</a>
+      </div>
+      <div class="table-responsive"><table class="table table-hover mb-0">
+        <thead><tr><th>日期</th><th>客户</th><th>合同</th><th class="text-end">金额</th></tr></thead>
+        <tbody>
+        {% for payment in recent_payments %}
+          <tr><td>{{ payment.paid_on }}</td><td>{{ payment.contract.customer.name }}</td><td>{{ payment.contract.number }}</td><td class="text-end fw-semibold">{{ payment.amount|money }}</td></tr>
+        {% else %}<tr><td colspan="4" class="empty-cell">暂无收款记录</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="col-xl-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <strong>近期跟进</strong><a href="/leads" class="small">查看线索</a>
+      </div>
+      <div class="list-group list-group-flush">
+        {% for lead in followups %}
+        <a href="/leads/{{ lead.id }}/edit" class="list-group-item list-group-item-action d-flex justify-content-between py-3">
+          <div><strong>{{ lead.name }}</strong><div class="small text-secondary">{{ lead.phone or '未填写电话' }}</div></div>
+          <span class="badge {% if lead.next_follow_at < today %}text-bg-danger{% else %}text-bg-light{% endif %} align-self-center">{{ lead.next_follow_at }}</span>
+        </a>
+        {% else %}<div class="empty-cell">暂无待跟进线索</div>{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

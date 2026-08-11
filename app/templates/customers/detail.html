@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ customer.name }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>{{ customer.name }}</h1><p>{{ customer.contact_name or '未填写主要联系人' }} · {{ customer.phone or '未填写电话' }}</p></div><div class="d-flex gap-2"><a href="/contracts/new?customer_id={{ customer.id }}" class="btn btn-outline-primary">新建合同</a><a href="/customers/{{ customer.id }}/edit" class="btn btn-primary">编辑资料</a></div></div>
+<div class="row g-4">
+  <div class="col-xl-5">
+    <div class="card border-0 shadow-sm mb-4"><div class="card-body p-4">
+      <h2 class="h5 mb-3">基本资料</h2>
+      <dl class="detail-grid"><dt>状态</dt><dd>{{ '有效' if customer.status == 'active' else '停用' }}</dd><dt>来源</dt><dd>{{ customer.source or '-' }}</dd><dt>负责人</dt><dd>{{ customer.owner.name if customer.owner else '-' }}</dd><dt>创建时间</dt><dd>{{ customer.created_at.strftime('%Y-%m-%d') }}</dd><dt>备注</dt><dd>{{ customer.notes or '-' }}</dd></dl>
+    </div></div>
+    <div class="card border-0 shadow-sm"><div class="card-body p-4">
+      <h2 class="h5 mb-3">添加联系人</h2>
+      <form method="post" action="/customers/{{ customer.id }}/contacts">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="row g-2"><div class="col-6"><input class="form-control" name="name" placeholder="姓名" required></div><div class="col-6"><input class="form-control" name="phone" placeholder="电话"></div><div class="col-6"><input class="form-control" name="position" placeholder="职位"></div><div class="col-6 d-flex align-items-center"><label class="form-check"><input class="form-check-input" type="checkbox" name="is_primary"><span class="form-check-label">设为主要联系人</span></label></div></div>
+        <button class="btn btn-outline-primary mt-3">添加</button>
+      </form>
+    </div></div>
+  </div>
+  <div class="col-xl-7">
+    <div class="card border-0 shadow-sm mb-4"><div class="card-header bg-white py-3"><strong>联系人</strong></div><div class="table-responsive"><table class="table mb-0">
+      <thead><tr><th>姓名</th><th>职位</th><th>电话</th><th></th></tr></thead><tbody>
+      {% for contact in customer.contacts %}<tr><td>{{ contact.name }} {% if contact.is_primary %}<span class="badge text-bg-primary">主要</span>{% endif %}</td><td>{{ contact.position or '-' }}</td><td>{{ contact.phone or '-' }}</td><td class="text-end"><form method="post" action="/customers/{{ customer.id }}/contacts/{{ contact.id }}/delete"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-link text-danger">删除</button></form></td></tr>{% else %}<tr><td colspan="4" class="empty-cell">暂无联系人</td></tr>{% endfor %}
+      </tbody></table></div></div>
+    <div class="card border-0 shadow-sm"><div class="card-header bg-white py-3"><strong>关联合同</strong></div><div class="table-responsive"><table class="table mb-0">
+      <thead><tr><th>编号</th><th>合同名称</th><th>金额</th><th>状态</th></tr></thead><tbody>
+      {% for contract in customer.contracts %}<tr><td>{{ contract.number }}</td><td>{{ contract.title }}</td><td>{{ contract.amount|money }}</td><td>{{ contract.status }}</td></tr>{% else %}<tr><td colspan="4" class="empty-cell">暂无合同</td></tr>{% endfor %}
+      </tbody></table></div></div>
+  </div>
+</div>
+{% endblock %}
+

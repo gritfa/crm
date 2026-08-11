@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}线索管理{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>线索管理</h1><p>记录潜在客户并安排下一次跟进</p></div><a href="/leads/new" class="btn btn-primary">新增线索</a></div>
+<div class="card border-0 shadow-sm">
+  <div class="card-body border-bottom"><form class="row g-2" method="get">
+    <div class="col-md-5"><input class="form-control" name="q" value="{{ q }}" placeholder="搜索名称或电话"></div>
+    <div class="col-md-3"><select class="form-select" name="status"><option value="open" {% if status=='open' %}selected{% endif %}>待跟进</option><option value="all" {% if status=='all' %}selected{% endif %}>全部</option><option value="new" {% if status=='new' %}selected{% endif %}>新线索</option><option value="following" {% if status=='following' %}selected{% endif %}>跟进中</option><option value="won" {% if status=='won' %}selected{% endif %}>已转客户</option><option value="lost" {% if status=='lost' %}selected{% endif %}>已流失</option></select></div>
+    <div class="col-auto"><button class="btn btn-outline-primary">查询</button></div>
+  </form></div>
+  <div class="table-responsive"><table class="table table-hover mb-0">
+    <thead><tr><th>名称</th><th>电话</th><th>来源</th><th>状态</th><th>下次跟进</th><th></th></tr></thead>
+    <tbody>{% for lead in leads %}<tr>
+      <td class="fw-semibold">{{ lead.name }}</td><td>{{ lead.phone or '-' }}</td><td>{{ lead.source or '-' }}</td>
+      <td><span class="badge status-{{ lead.status }}">{{ {'new':'新线索','following':'跟进中','won':'已转客户','lost':'已流失'}[lead.status] }}</span></td><td>{{ lead.next_follow_at or '-' }}</td>
+      <td class="text-end text-nowrap"><a href="/leads/{{ lead.id }}/edit" class="btn btn-sm btn-outline-secondary">编辑</a>{% if lead.status not in ['won','lost'] %}<form class="d-inline" method="post" action="/leads/{{ lead.id }}/convert"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-primary">转为客户</button></form>{% elif lead.converted_customer_id %}<a class="btn btn-sm btn-link" href="/customers/{{ lead.converted_customer_id }}">查看客户</a>{% endif %}</td>
+    </tr>{% else %}<tr><td colspan="6" class="empty-cell">暂无符合条件的线索</td></tr>{% endfor %}</tbody>
+  </table></div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ '编辑线索' if lead else '新增线索' }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>{{ '编辑线索' if lead else '新增线索' }}</h1><p>保存关键信息和下一步行动</p></div></div>
+<div class="card border-0 shadow-sm form-card"><div class="card-body p-4">
+  <form method="post" action="{{ '/leads/' ~ lead.id if lead else '/leads' }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="row g-3">
+      <div class="col-md-6"><label class="form-label">名称 *</label><input class="form-control" name="name" value="{{ lead.name if lead else '' }}" required></div>
+      <div class="col-md-6"><label class="form-label">联系电话</label><input class="form-control" name="phone" value="{{ lead.phone or '' if lead else '' }}"></div>
+      <div class="col-md-6"><label class="form-label">来源</label><input class="form-control" name="source" value="{{ lead.source or '' if lead else '' }}"></div>
+      <div class="col-md-6"><label class="form-label">下次跟进日期</label><input class="form-control" type="date" name="next_follow_at" value="{{ lead.next_follow_at if lead and lead.next_follow_at else '' }}"></div>
+      {% if lead and lead.status != 'won' %}<div class="col-md-6"><label class="form-label">状态</label><select class="form-select" name="status"><option value="new" {% if lead.status=='new' %}selected{% endif %}>新线索</option><option value="following" {% if lead.status=='following' %}selected{% endif %}>跟进中</option><option value="lost" {% if lead.status=='lost' %}selected{% endif %}>已流失</option></select></div>{% endif %}
+      <div class="col-12"><label class="form-label">跟进备注</label><textarea class="form-control" name="notes" rows="5">{{ lead.notes or '' if lead else '' }}</textarea></div>
+    </div>
+    <div class="d-flex gap-2 mt-4"><button class="btn btn-primary">保存</button><a class="btn btn-light" href="/leads">取消</a></div>
+  </form>
+</div></div>
+{% endblock %}
+
