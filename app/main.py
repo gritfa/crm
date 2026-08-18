@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 from starlette.middleware.sessions import SessionMiddleware
@@ -47,13 +47,29 @@ app.add_middleware(
     same_site="lax",
     max_age=8 * 60 * 60,
 )
-app.mount("/static", StaticFiles(directory=Path(__file__).resolve().parent / "static"), name="static")
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.include_router(router)
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/manifest.webmanifest", include_in_schema=False)
+def manifest() -> FileResponse:
+    return FileResponse(STATIC_DIR / "manifest.webmanifest", media_type="application/manifest+json")
+
+
+@app.get("/sw.js", include_in_schema=False)
+def service_worker() -> FileResponse:
+    # Service Worker 必须从根路径提供，否则作用域被限制在 /static/ 下，管不到业务页面
+    return FileResponse(
+        STATIC_DIR / "sw.js",
+        media_type="text/javascript",
+        headers={"Service-Worker-Allowed": "/", "Cache-Control": "no-cache"},
+    )
 
 
 @app.exception_handler(HTTPException)

@@ -9,11 +9,11 @@
       <div class="col-md-8"><label class="form-label">客户名称 *</label><input class="form-control" name="name" value="{{ customer.name if customer else '' }}" required></div>
       {% if customer %}<div class="col-md-4"><label class="form-label">状态</label><select class="form-select" name="status"><option value="active" {% if customer.status=='active' %}selected{% endif %}>有效</option><option value="inactive" {% if customer.status=='inactive' %}selected{% endif %}>停用</option></select></div>{% endif %}
       <div class="col-md-6"><label class="form-label">主要联系人</label><input class="form-control" name="contact_name" value="{{ customer.contact_name or '' if customer else '' }}"></div>
-      <div class="col-md-6"><label class="form-label">联系电话</label><input class="form-control" name="phone" value="{{ customer.phone or '' if customer else '' }}"></div>
+      <div class="col-md-6"><label class="form-label">联系电话</label><input class="form-control" type="tel" name="phone" value="{{ customer.phone or '' if customer else '' }}"></div>
       <div class="col-md-6"><label class="form-label">客户来源</label><input class="form-control" name="source" value="{{ customer.source or '' if customer else '' }}" placeholder="转介绍、官网、线下活动等"></div>
       <div class="col-12"><label class="form-label">备注</label><textarea class="form-control" name="notes" rows="4">{{ customer.notes or '' if customer else '' }}</textarea></div>
     </div>
-    <div class="d-flex gap-2 mt-4"><button class="btn btn-primary">保存</button><a class="btn btn-light" href="{{ '/customers/' ~ customer.id if customer else '/customers' }}">取消</a></div>
+    <div class="d-flex gap-2 mt-4 form-actions"><button class="btn btn-primary">保存</button><a class="btn btn-light" href="{{ '/customers/' ~ customer.id if customer else '/customers' }}">取消</a></div>
   </form>
 </div></div>
 {% endblock %}

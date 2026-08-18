@@ -1,0 +1,37 @@
+{
+  "name": "CRM 系统",
+  "short_name": "CRM",
+  "description": "面向小型服务团队的轻量客户管理系统",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f7fb",
+  "theme_color": "#3157d5",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    { "name": "新增客户", "url": "/customers/new" },
+    { "name": "新增线索", "url": "/leads/new" },
+    { "name": "登记收款", "url": "/payments/new" }
+  ]
+}

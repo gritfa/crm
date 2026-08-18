@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}首页 · CRM 系统{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="page-heading">
   <div><h1 class="h3 mb-1">工作台</h1><div class="text-secondary">今天是 {{ today }}</div></div>
   <div class="d-flex gap-2">
     <a href="/leads/new" class="btn btn-outline-primary">新增线索</a>
@@ -20,11 +20,11 @@
       <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
         <strong>最近收款</strong><a href="/payments" class="small">查看全部</a>
       </div>
-      <div class="table-responsive"><table class="table table-hover mb-0">
-        <thead><tr><th>日期</th><th>客户</th><th>合同</th><th class="text-end">金额</th></tr></thead>
+      <div class="table-responsive table-cards-wrap"><table class="table table-hover mb-0 table-cards">
+        <thead><tr><th>客户</th><th>日期</th><th>合同</th><th class="text-end">金额</th></tr></thead>
         <tbody>
         {% for payment in recent_payments %}
-          <tr><td>{{ payment.paid_on }}</td><td>{{ payment.contract.customer.name }}</td><td>{{ payment.contract.number }}</td><td class="text-end fw-semibold">{{ payment.amount|money }}</td></tr>
+          <tr><td class="cell-title">{{ payment.contract.customer.name }}</td><td data-label="日期">{{ payment.paid_on }}</td><td data-label="合同">{{ payment.contract.number }}</td><td class="text-end fw-semibold" data-label="金额">{{ payment.amount|money }}</td></tr>
         {% else %}<tr><td colspan="4" class="empty-cell">暂无收款记录</td></tr>{% endfor %}
         </tbody>
       </table></div>

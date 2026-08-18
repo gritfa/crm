@@ -2,6 +2,7 @@
   --brand: #3157d5;
   --brand-soft: #eef2ff;
   --surface: #f5f7fb;
+  --tabbar-h: 56px;
 }
 
 body { background: var(--surface); color: #1c2434; min-height: 100vh; }
@@ -34,9 +35,139 @@ a { color: var(--brand); text-decoration: none; }
 .status-won, .status-completed { background: #dff4e7; color: #18723a; }
 .status-lost, .status-cancelled { background: #f4e2e2; color: #a43737; }
 
-@media (max-width: 768px) {
-  .page-heading { align-items: flex-start; flex-direction: column; }
-  .metric-card { min-height: 110px; }
-  .metric-card strong { font-size: 1.5rem; }
+/* ─────────────────────────────────────────────
+   手机端底部标签栏（仅窄屏显示，宽屏用顶部导航）
+   ───────────────────────────────────────────── */
+.mobile-tabbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 1030;
+  display: flex;
+  background: #fff;
+  border-top: 1px solid #e6eaf0;
+  box-shadow: 0 -.25rem .75rem rgba(31, 45, 61, .05);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.mobile-tabbar a {
+  flex: 1 1 0;
+  min-height: var(--tabbar-h);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .15rem;
+  padding: .4rem .2rem;
+  color: #7b8595;
+  font-size: .72rem;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobile-tabbar a svg { width: 22px; height: 22px; stroke-width: 1.8; }
+.mobile-tabbar a.active { color: var(--brand); font-weight: 600; }
+.mobile-tabbar a.active svg { stroke-width: 2.2; }
+
+/* ─────────────────────────────────────────────
+   手机端适配
+   ───────────────────────────────────────────── */
+@media (max-width: 991.98px) {
+  /* 给底部标签栏让出空间，避免内容被遮挡 */
+  body.has-tabbar .content-shell {
+    padding-bottom: calc(var(--tabbar-h) + 1.5rem + env(safe-area-inset-bottom)) !important;
+  }
 }
 
+@media (max-width: 767.98px) {
+  .page-heading { align-items: stretch; flex-direction: column; gap: .75rem; }
+  .page-heading h1 { font-size: 1.4rem; }
+  .page-heading .btn { width: 100%; }
+  .metric-card { min-height: 92px; padding: 1rem; border-radius: .85rem; }
+  .metric-card span { font-size: .82rem; }
+  .metric-card strong { font-size: 1.5rem; }
+  .card-body { padding: 1rem; }
+  .detail-grid { grid-template-columns: 84px 1fr; }
+
+  /* iOS 聚焦输入框时会自动放大页面，字号 ≥16px 可避免 */
+  .form-control, .form-select, .form-control-lg, .form-select-lg { font-size: 16px; min-height: 44px; }
+  textarea.form-control { min-height: auto; }
+  /* 触摸目标不小于 44px */
+  .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+  .btn-sm { min-height: 38px; }
+  .btn-close { min-width: 38px; min-height: 38px; }
+  /* 折叠菜单里的链接默认只有 24px 高，手机上点不准 */
+  .navbar-collapse .nav-link { min-height: 44px; display: flex; align-items: center; }
+  /* 默认的 16px 复选框在手机上很难点中，放大并让整行都可点 */
+  .form-check { display: flex; align-items: center; gap: .6rem; min-height: 44px; padding-left: 0; margin: 0; }
+  .form-check .form-check-input { flex: 0 0 auto; width: 1.4rem; height: 1.4rem; margin: 0; }
+  .form-check .form-check-label { margin: 0; }
+
+  /* 筛选表单在窄屏整列铺开 */
+  .filter-form .col-auto { flex: 1 0 100%; }
+  .filter-form .col-auto .btn { width: 100%; }
+
+  /* 表单底部的保存/取消平分整行 */
+  .form-actions .btn { flex: 1 1 0; }
+
+  /* ── 表格转卡片：给每个 td 标注 data-label，窄屏按「标签 : 值」竖排 ── */
+  .table-cards { border-collapse: separate; }
+  .table-cards thead { display: none; }
+  .table-cards, .table-cards tbody, .table-cards tr, .table-cards td { display: block; width: 100%; }
+  .table-cards tbody tr {
+    border: 1px solid #e9edf3;
+    border-radius: .75rem;
+    margin: .75rem;
+    padding: .25rem .15rem;
+    background: #fff;
+    box-shadow: 0 .15rem .5rem rgba(31, 45, 61, .04);
+  }
+  .table-cards tbody tr:last-child { margin-bottom: 1rem; }
+  .table-cards > :not(caption) > * > * { padding: .5rem .85rem; }
+  .table-cards tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 0;
+    box-shadow: none;
+    text-align: right;
+    min-height: 40px;
+  }
+  .table-cards tbody td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    color: #7b8595;
+    font-size: .8rem;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+  }
+  /* 首列作为卡片标题，独占一行并加粗 */
+  .table-cards tbody td.cell-title {
+    display: block;
+    text-align: left;
+    font-size: 1.02rem;
+    font-weight: 600;
+    padding-top: .8rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid #f0f3f7;
+    margin-bottom: .25rem;
+  }
+  .table-cards tbody td.cell-title::before { display: none; }
+  /* 操作列：按钮平铺成一排，撑满卡片宽度 */
+  .table-cards tbody td.cell-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    padding-top: .35rem;
+    padding-bottom: .8rem;
+  }
+  .table-cards tbody td.cell-actions::before { display: none; }
+  .table-cards tbody td.cell-actions > *,
+  .table-cards tbody td.cell-actions form { flex: 1 1 0; min-width: 96px; }
+  .table-cards tbody td.cell-actions .btn { width: 100%; }
+  /* 空态：不显示标签，整块居中 */
+  .table-cards tbody td.empty-cell { display: block; text-align: center; padding: 2rem !important; }
+  .table-cards tbody td.empty-cell::before { display: none; }
+  .table-cards tbody tr:has(.empty-cell) { border: 0; box-shadow: none; background: transparent; }
+  /* 卡片模式下不需要横向滚动 */
+  .table-cards-wrap { overflow-x: visible; }
+}

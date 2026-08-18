@@ -2,9 +2,8 @@
 {% block title %}收款记录{% endblock %}
 {% block content %}
 <div class="page-heading"><div><h1>收款记录</h1><p>按合同登记实际到账金额</p></div><a href="/payments/new" class="btn btn-primary">登记收款</a></div>
-<div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0">
-  <thead><tr><th>收款日期</th><th>客户</th><th>合同</th><th>方式</th><th>流水号</th><th class="text-end">金额</th><th></th></tr></thead>
-  <tbody>{% for payment in payments %}<tr><td>{{ payment.paid_on }}</td><td>{{ payment.contract.customer.name }}</td><td>{{ payment.contract.number }}</td><td>{{ {'bank':'银行转账','cash':'现金','wechat':'微信','alipay':'支付宝','other':'其他'}[payment.method] }}</td><td>{{ payment.reference or '-' }}</td><td class="text-end fw-semibold text-success">{{ payment.amount|money }}</td><td class="text-end"><form method="post" action="/payments/{{ payment.id }}/delete" onsubmit="return confirm('确认删除这条收款记录？')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-link text-danger">删除</button></form></td></tr>{% else %}<tr><td colspan="7" class="empty-cell">暂无收款记录</td></tr>{% endfor %}</tbody>
+<div class="card border-0 shadow-sm"><div class="table-responsive table-cards-wrap"><table class="table table-hover mb-0 table-cards">
+  <thead><tr><th>客户</th><th>收款日期</th><th>合同</th><th>方式</th><th>流水号</th><th class="text-end">金额</th><th></th></tr></thead>
+  <tbody>{% for payment in payments %}<tr><td class="cell-title">{{ payment.contract.customer.name }}</td><td data-label="收款日期">{{ payment.paid_on }}</td><td data-label="合同">{{ payment.contract.number }}</td><td data-label="方式">{{ {'bank':'银行转账','cash':'现金','wechat':'微信','alipay':'支付宝','other':'其他'}[payment.method] }}</td><td data-label="流水号">{{ payment.reference or '-' }}</td><td class="text-end fw-semibold text-success" data-label="金额">{{ payment.amount|money }}</td><td class="text-end cell-actions"><form method="post" action="/payments/{{ payment.id }}/delete" onsubmit="return confirm('确认删除这条收款记录？')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-link text-danger">删除</button></form></td></tr>{% else %}<tr><td colspan="7" class="empty-cell">暂无收款记录</td></tr>{% endfor %}</tbody>
 </table></div></div>
 {% endblock %}
-

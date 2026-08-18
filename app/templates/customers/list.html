@@ -3,17 +3,16 @@
 {% block content %}
 <div class="page-heading"><div><h1>客户管理</h1><p>集中维护客户和联系人资料</p></div><a href="/customers/new" class="btn btn-primary">新增客户</a></div>
 <div class="card border-0 shadow-sm">
-  <div class="card-body border-bottom"><form class="row g-2" method="get">
+  <div class="card-body border-bottom"><form class="row g-2 filter-form" method="get">
     <div class="col-md-5"><input class="form-control" name="q" value="{{ q }}" placeholder="搜索客户名称或电话"></div>
     <div class="col-md-3"><select class="form-select" name="status"><option value="all" {% if status=='all' %}selected{% endif %}>全部状态</option><option value="active" {% if status=='active' %}selected{% endif %}>有效</option><option value="inactive" {% if status=='inactive' %}selected{% endif %}>停用</option></select></div>
     <div class="col-auto"><button class="btn btn-outline-primary">查询</button></div>
   </form></div>
-  <div class="table-responsive"><table class="table table-hover mb-0">
+  <div class="table-responsive table-cards-wrap"><table class="table table-hover mb-0 table-cards">
     <thead><tr><th>客户名称</th><th>主要联系人</th><th>电话</th><th>来源</th><th>负责人</th><th>状态</th></tr></thead>
     <tbody>{% for customer in customers %}<tr class="clickable-row" onclick="location.href='/customers/{{ customer.id }}'">
-      <td class="fw-semibold">{{ customer.name }}</td><td>{{ customer.contact_name or '-' }}</td><td>{{ customer.phone or '-' }}</td><td>{{ customer.source or '-' }}</td><td>{{ customer.owner.name if customer.owner else '-' }}</td><td><span class="badge {{ 'text-bg-success' if customer.status == 'active' else 'text-bg-secondary' }}">{{ '有效' if customer.status == 'active' else '停用' }}</span></td>
+      <td class="fw-semibold cell-title">{{ customer.name }}</td><td data-label="主要联系人">{{ customer.contact_name or '-' }}</td><td data-label="电话">{{ customer.phone or '-' }}</td><td data-label="来源">{{ customer.source or '-' }}</td><td data-label="负责人">{{ customer.owner.name if customer.owner else '-' }}</td><td data-label="状态"><span class="badge {{ 'text-bg-success' if customer.status == 'active' else 'text-bg-secondary' }}">{{ '有效' if customer.status == 'active' else '停用' }}</span></td>
     </tr>{% else %}<tr><td colspan="6" class="empty-cell">没有符合条件的客户</td></tr>{% endfor %}</tbody>
   </table></div>
 </div>
 {% endblock %}
-

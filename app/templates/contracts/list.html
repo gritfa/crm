@@ -3,18 +3,17 @@
 {% block content %}
 <div class="page-heading"><div><h1>合同管理</h1><p>跟踪合同金额、执行状态和回款进度</p></div><a href="/contracts/new" class="btn btn-primary">新增合同</a></div>
 <div class="card border-0 shadow-sm">
-  <div class="card-body border-bottom"><form class="row g-2" method="get">
+  <div class="card-body border-bottom"><form class="row g-2 filter-form" method="get">
     <div class="col-md-5"><input class="form-control" name="q" value="{{ q }}" placeholder="搜索编号、合同或客户"></div>
     <div class="col-md-3"><select class="form-select" name="status"><option value="all" {% if status=='all' %}selected{% endif %}>全部状态</option><option value="draft" {% if status=='draft' %}selected{% endif %}>草稿</option><option value="active" {% if status=='active' %}selected{% endif %}>执行中</option><option value="completed" {% if status=='completed' %}selected{% endif %}>已完成</option><option value="cancelled" {% if status=='cancelled' %}selected{% endif %}>已取消</option></select></div>
     <div class="col-auto"><button class="btn btn-outline-primary">查询</button></div>
   </form></div>
-  <div class="table-responsive"><table class="table table-hover mb-0">
+  <div class="table-responsive table-cards-wrap"><table class="table table-hover mb-0 table-cards">
     <thead><tr><th>编号</th><th>客户</th><th>合同名称</th><th class="text-end">金额</th><th class="text-end">已收</th><th class="text-end">待收</th><th>状态</th><th></th></tr></thead>
     <tbody>{% for contract in contracts %}<tr>
-      <td class="fw-semibold">{{ contract.number }}</td><td><a href="/customers/{{ contract.customer.id }}">{{ contract.customer.name }}</a></td><td>{{ contract.title }}</td><td class="text-end">{{ contract.amount|money }}</td><td class="text-end text-success">{{ contract.paid_amount|money }}</td><td class="text-end">{{ contract.outstanding_amount|money }}</td><td><span class="badge status-{{ contract.status }}">{{ {'draft':'草稿','active':'执行中','completed':'已完成','cancelled':'已取消'}[contract.status] }}</span></td>
-      <td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-secondary" href="/contracts/{{ contract.id }}/edit">编辑</a><a class="btn btn-sm btn-primary" href="/payments/new?contract_id={{ contract.id }}">登记收款</a></td>
+      <td class="fw-semibold cell-title">{{ contract.number }}</td><td data-label="客户"><a href="/customers/{{ contract.customer.id }}">{{ contract.customer.name }}</a></td><td data-label="合同名称">{{ contract.title }}</td><td class="text-end" data-label="金额">{{ contract.amount|money }}</td><td class="text-end text-success" data-label="已收">{{ contract.paid_amount|money }}</td><td class="text-end" data-label="待收">{{ contract.outstanding_amount|money }}</td><td data-label="状态"><span class="badge status-{{ contract.status }}">{{ {'draft':'草稿','active':'执行中','completed':'已完成','cancelled':'已取消'}[contract.status] }}</span></td>
+      <td class="text-end text-nowrap cell-actions"><a class="btn btn-sm btn-outline-secondary" href="/contracts/{{ contract.id }}/edit">编辑</a><a class="btn btn-sm btn-primary" href="/payments/new?contract_id={{ contract.id }}">登记收款</a></td>
     </tr>{% else %}<tr><td colspan="8" class="empty-cell">暂无符合条件的合同</td></tr>{% endfor %}</tbody>
   </table></div>
 </div>
 {% endblock %}
-
